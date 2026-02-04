@@ -115,6 +115,44 @@ class Car(models.Model):
     # Фотографии (через отдельную модель)
     # main_image = models.ImageField(upload_to='cars/', blank=True, null=True, verbose_name="Главное фото")
     
+    def mask_price(self):
+        """Маскируем цену: 1234567.89 -> 12****.**"""
+        price_str = str(self.price)
+        integer_part, decimal_part = price_str.split('.')
+        masked_integer = integer_part[:2] + '*' * (len(integer_part) - 2)
+        return f"{masked_integer}.{decimal_part}"
+
+    def mask_mileage(self):
+        """Маскируем пробег: 123456 -> 12****"""
+        mileage_str = str(self.mileage)
+        return mileage_str[:2] + '*' * (len(mileage_str) - 2)
+
+    def mask_description(self):
+        """Маскируем описание, оставляя только первые N символов"""
+        if self.description:
+            return self.description[:50] + "..."
+        return "..."
+
+    def get_masked_data(self):
+        """Возвращает словарь с замаскированными данными"""
+        return {
+            "id": self.id,
+            "brand": self.brand,
+            "model": self.model,
+            "year": self.year,
+            "engine_type": self.engine_type,
+            "transmission": self.transmission,
+            "drive_type": self.drive_type,
+            "horsepower": self.horsepower,
+            "mileage_masked": self.mask_mileage(),
+            "price_masked": self.mask_price(),
+            "description_masked": self.mask_description(),
+            "has_accidents": self.has_accidents,
+            "was_taxi": self.was_taxi,
+            "owners_count": self.owners_count,
+            "is_sold": self.is_sold,
+        }
+
     class Meta:
         verbose_name = "Автомобиль"
         verbose_name_plural = "Автомобили"
@@ -125,6 +163,7 @@ class Car(models.Model):
             models.Index(fields=['price']),
             models.Index(fields=['mileage']),
         ]
+
     
     def __str__(self):
         return f"{self.brand} {self.model} {self.year} - {self.price} руб."
