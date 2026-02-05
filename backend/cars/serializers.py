@@ -17,6 +17,8 @@ class PublicCarSerializer(serializers.ModelSerializer):
             'brand',
             'model',
             'year',
+            'engine_volume',
+            'mileage',
             'engine_type',
             'transmission',
             'drive_type',
@@ -24,6 +26,8 @@ class PublicCarSerializer(serializers.ModelSerializer):
             'has_accidents',
             'was_taxi',
             'owners_count',
+            'price',
+            'yearly_maintenance',
             'is_sold'
         )
 
